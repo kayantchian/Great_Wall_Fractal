@@ -8,9 +8,12 @@ class UserInterface:
         self.index_input_int = 0
         self.index_input_is_valid = False
         self.user_chosen_input = ""
+        self.mnemonic_type = self.get_mnemonic_type()  # Prompt user for mnemonic type
         self.get_theme()
         self.mnemo = Mnemonic(self.user_chosen_input)
-        self.user_chosen_input = "" #clearing variable
+
+
+        self.user_chosen_input = ""  # Clearing variable
 
     def get_integer(self, min, max) :
         self.index_input_is_valid = False
@@ -32,6 +35,17 @@ class UserInterface:
         print(text)
         self.get_integer(min, max)
 
+    def get_mnemonic_type(self):
+        print("Choose mnemonic type:")
+        print("1) Text")
+        print("2) Fractals")
+        self.get_integer(1, 2)  # Get user choice
+        if self.index_input_int == 1:
+            self.user_chosen_input = "text"
+        elif self.index_input_int == 2:
+            self.user_chosen_input = "fractals"
+        return self.user_chosen_input
+    
     def get_theme(self) : #TODO user-safety me, sof-code me
         holderstr = "Choose your Formosa theme:\n"
         theme_list = []

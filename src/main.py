@@ -1,17 +1,17 @@
 import random
 import argon2
 from src.mnemonic.mnemonic import Mnemonic
+from src.mnemonic.fractal import *
 from user_interface import UserInterface
 
 class GreatWall:
     def __init__(self):
         #user interface
         self.user_interface = UserInterface()
-
-        #Formosa
+        
         self.mnemo = self.user_interface.mnemo
         self.nbytesform = 4 #number of bytes in formosa sentence TODO soft code me
-
+        
         #constants
         self.argon2salt = "00000000000000000000000000000000"
 
@@ -19,12 +19,10 @@ class GreatWall:
         self.user_interface.prompt_integer("Choose TLP parameter --- # of iterations of memory-hard hash", 1, 24*7*4*3)
         self.TLP_param = self.user_interface.index_input_int
 
-        #topology of iterative derivation
+        #tree deep
         self.user_interface.prompt_integer("Choose tree depth --- # of iterative procedural memory choices needed", 1, 256)
         self.tree_depth = self.user_interface.index_input_int
-        self.user_interface.prompt_integer("Choose tree arity --- # of options at each iteration", 2, 256)
-        self.tree_arity = self.user_interface.index_input_int
-
+        
         #diagram values
         self.user_interface.get_sa0()
         self.sa0 = bytes(self.mnemo.to_entropy(self.user_interface.user_chosen_input))
@@ -37,10 +35,27 @@ class GreatWall:
         self.state = self.sa0
         self.shuffled_bytes = self.sa0 #dummy initialization
         self.current_level = 0
-
-        #actuall work
+        
+        #derivation of Sn
         self.time_intensive_derivation()
-        self.user_dependent_derivation()
+        
+        #topology of iterative derivation
+        if self.user_interface.mnemonic_type.lower() == "text":
+            
+            # topology of iterative derivation
+            self.user_interface.prompt_integer("Choose tree arity --- # of options at each iteration", 2, 256)
+            self.tree_arity = self.user_interface.index_input_int
+            
+            #actuall work
+            self.user_dependent_derivation()
+        
+        elif self.user_interface.mnemonic_type.lower() == "fractals":
+            # topology of iterative derivation for fractals
+            self.user_interface.prompt_integer("Choose the zoom level between 1E-5 and 1E-5", -5, -5)
+            self.tree_arity = self.user_interface.index_input_int
+            
+            startFractal()
+            
 
     def time_intensive_derivation(self):
         # Calculating SA1 from SA0
